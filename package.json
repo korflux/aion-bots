@@ -1,0 +1,39 @@
+{
+  "name": "aion",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Aion: app web de bots autônomos (monorepo pnpm).",
+  "license": "FSL-1.1-ALv2",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "test": "vitest run",
+    "validate:provider": "tsx tests/support/validate-provider.ts",
+    "validate:cache": "tsx tests/support/validate-prompt-cache.ts",
+    "validate:anthropic": "node --env-file-if-exists=.env.anthropic --import tsx tests/support/validate-anthropic.ts",
+    "validate:cache-ttl": "node --env-file-if-exists=.env.provider --import tsx tests/support/validate-cache-ttl.ts",
+    "validate:tool-by-name": "node --env-file-if-exists=.env.provider --import tsx tests/support/validate-tool-by-name.ts",
+    "bench": "node --env-file-if-exists=.env.provider --import tsx tests/support/aion-bench.ts",
+    "bench:baseline": "node --env-file-if-exists=.env.provider --import tsx tests/support/aion-bench.ts --mode real --set optimization --repeats 8 --concurrency 4 --run-cap 2 --label linha-de-base --report .vibeflow/phases/phase-15-custo-rotinas-gmail-grupos-ferramentas-prompt/baseline.md",
+    "validate:compaction": "node --env-file-if-exists=.env.validate.local --import tsx tests/support/validate-compaction.ts",
+    "report:cost": "node --env-file-if-exists=.env.report.local --import tsx tests/support/report-cost.ts",
+    "report:push": "node --env-file-if-exists=.env.report.local --import tsx tests/support/report-push.ts",
+    "export:public": "node scripts/export-public.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^24.19.0",
+    "eslint": "^9.39.5",
+    "globals": "^17.12.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.2"
+  }
+}

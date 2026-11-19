@@ -1,0 +1,21 @@
+{
+  "name": "@aion/sandbox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Serviço sandbox: executa Python (Pyodide/WebAssembly) isolado em processos descartáveis, atrás de HTTP interno com token próprio. Roda em Node 26 só dentro da imagem.",
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:container": "tsx scripts/test-container.ts"
+  },
+  "dependencies": {
+    "pyodide": "314.0.7"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.15",
+    "vitest": "^5.0.2"
+  }
+}

@@ -1,0 +1,24 @@
+# Achados do gitleaks já avaliados e descartados (um por linha: commit:arquivo:regra:linha).
+#
+# key-probe.test.ts, commit 9933ae2 (R8): chaves FALSAS de teste ('valid-probe-key-1111' e parecidas), que só o provedor falso
+# entende pelo prefixo. A regra generic-api-key as confundiu com segredos por causa da palavra "key" no texto. O arquivo já foi
+# corrigido (constantes sem "key"), mas o achado continua no histórico desse commit, e reescrevê-lo mudaria os hashes citados no
+# plan.md, no review.md e em .erros-encontrados/. Não há segredo real nestes três pontos.
+9933ae23fd5f580f662270b5801553003ae8b6ab:packages/core/src/credentials/key-probe.test.ts:generic-api-key:40
+9933ae23fd5f580f662270b5801553003ae8b6ab:packages/core/src/credentials/key-probe.test.ts:generic-api-key:49
+9933ae23fd5f580f662270b5801553003ae8b6ab:packages/core/src/credentials/key-probe.test.ts:generic-api-key:62
+#
+# routines.spec.ts, commit 25c1e2a (T9): chave FALSA de teste ('valid-e2e-rotinas-1111'), aceita só pelo provedor falso pelo prefixo. A
+# regra generic-api-key a confundiu com um segredo pelo nome da constante (PROVIDER_KEY). O arquivo já foi corrigido (constante renomeada),
+# mas o achado continua no histórico desse commit, e reescrevê-lo mudaria os hashes citados no plan.md e em .erros-encontrados/.
+25c1e2a5c18c3be8d57a52616955ad279cc3a22a:apps/web/e2e/routines.spec.ts:generic-api-key:15
+#
+# credentials.routes.test.ts e key-probe.test.ts, commit b68a9c26 (phase 17, passo 5): chaves FALSAS da Anthropic ('valid-anthropic-key-1111' e 'valid-anthropic-probe-1111'), que só o
+# servidor falso entende pelo prefixo. A regra generic-api-key as confundiu com segredos pela propriedade `key:` com valor literal. Os arquivos já foram corrigidos (valor numa constante, sem
+# a palavra "key"), mas o achado continua no histórico desse commit, e reescrevê-lo mudaria os hashes citados no plan.md.
+b68a9c26aac780a1448d4cb6001d90d9e1095d4b:apps/api/src/credentials.routes.test.ts:generic-api-key:299
+b68a9c26aac780a1448d4cb6001d90d9e1095d4b:apps/api/src/credentials.routes.test.ts:generic-api-key:308
+b68a9c26aac780a1448d4cb6001d90d9e1095d4b:apps/api/src/credentials.routes.test.ts:generic-api-key:319
+b68a9c26aac780a1448d4cb6001d90d9e1095d4b:packages/core/src/credentials/key-probe.test.ts:generic-api-key:159
+# O teste do passo 7 tinha o valor falso da chave de prova num literal `apiKey:` (corrigido no commit seguinte); o achado fica no histórico do commit f69ffd4, que não se reescreve.
+f69ffd47b8e81f23146e59c0e9655dba445886c4:packages/core/src/credentials/key-probe.test.ts:generic-api-key:186

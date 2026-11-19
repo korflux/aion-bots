@@ -1,0 +1,43 @@
+# Dependências e artefatos de build
+node_modules/
+dist/
+.next/
+out/
+*.tsbuildinfo
+coverage/
+
+# Segredos locais e backups sensíveis: nunca versionar (só .env.example)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.bak
+*.dump
+*.sql.gz
+
+# Saídas de teste
+test-results/
+playwright-report/
+.vitest/
+.embedded-pg/
+
+# Livro de gasto do banco de testes com modelo real (phase 15): soma o gasto do provedor e impede passar do teto; nunca versionar.
+.aion-bench/
+
+# Editor e sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+next-env.d.ts
+
+# Estado local do Claude Code: worktrees de agentes e screenshots de e2e, nunca versionar
+.claude/
+
+# `next dev` recria estes dois arquivos em apps/web (gerador de arquivos de agente do Next): o projeto usa o AGENTS.md da raiz (E7)
+apps/web/AGENTS.md
+apps/web/CLAUDE.md
+
+# Saída fixa da pilha E2E, independente da prévia local.
+.next-e2e/

@@ -1,0 +1,177 @@
+<!doctype html>
+<!--
+  Proposta de navegação do celular (phase 5): compara o fluxo atual com duas alternativas para chegar ao Chat geral.
+  Página estática local; as Faíscas vêm de assets/Faisca. Abrir servindo docs/identidade por HTTP (ver README.md).
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aion · navegação mobile</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Inter:wght@400;500;600&display=swap">
+<style>
+  /* Tokens do design system (tokens.json, tema escuro). */
+  :root{--bg-app:#0e0e13;--bg-panel:#15151b;--bg-surface:#1b1b22;--bg-hover:#23232b;--bg-selected:#2a2a33;--border:#2e2e38;--border-strong:#6a6a80;
+    --text:#ececf1;--muted:#a3a3b0;--subtle:#8b8b99;--action:#ececf1;--action-fg:#0e0e13;--faisca-claro:#8db6fa;--faisca-suave:#172340;--warning:#fbbf24;--warning-soft:#fbbf241f;--info:#8db6fa;--success:#4ade80;
+    --sans:"Inter",system-ui,sans-serif;--display:"Fredoka","Nunito",system-ui,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;padding:24px 16px 48px;background:var(--bg-app);color:var(--text);font:15px/24px var(--sans)}
+  main{max-width:1180px;margin:0 auto}
+  h1{font:600 22px/30px var(--sans);margin:0 0 4px}
+  .lead{color:var(--muted);margin:0 0 24px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;align-items:start}
+  .opt h2{font:600 16px/24px var(--sans);margin:0}
+  .opt .tag{display:inline-block;margin-left:8px;font:500 12px/16px var(--sans);padding:2px 8px;border-radius:999px;background:var(--faisca-suave);color:var(--faisca-claro);vertical-align:2px}
+  .opt p{color:var(--muted);font-size:14px;line-height:20px;margin:4px 0 12px}
+  .taps{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+  .taps span{font:500 12px/16px var(--sans);padding:4px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted)}
+  .taps b{color:var(--text)}
+
+  /* Moldura de celular 360 × 720 */
+  .phone{position:relative;width:340px;height:700px;border-radius:36px;border:8px solid #000;outline:1px solid var(--border);background:var(--bg-app);overflow:hidden;display:flex;flex-direction:column;margin:0 auto}
+  .sb{height:24px;flex:none}
+  .hdr{height:52px;flex:none;display:flex;align-items:center;gap:8px;padding:0 8px;border-bottom:1px solid var(--border)}
+  .hdr .t{font:500 14px/20px var(--sans);flex:1;display:flex;align-items:center;gap:8px}
+  .ib{width:40px;height:40px;display:grid;place-items:center;border-radius:10px;color:var(--muted);position:relative}
+  .ib.hit::after,.tab.hit::after,.hit::after{content:attr(data-n);position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:#f472b6;color:#1b1530;font:600 11px/18px var(--sans);text-align:center}
+  .body{flex:1;min-height:0;overflow:hidden;padding:12px}
+  .msg{max-width:85%;padding:8px 12px;border-radius:14px;font-size:14px;line-height:20px;margin-bottom:8px}
+  .me{margin-left:auto;background:var(--bg-surface)}
+  .bot{display:flex;gap:8px;align-items:flex-start;color:var(--text)}
+  .bot img{width:24px;height:24px;flex:none}
+  .composer{flex:none;margin:8px;border:1px solid var(--border);border-radius:24px;background:var(--bg-surface);padding:10px 14px;display:flex;align-items:center;gap:8px;color:var(--subtle);font-size:14px}
+  .composer .send{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--action);display:grid;place-items:center;color:var(--action-fg)}
+  .tabs{flex:none;height:64px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);background:var(--bg-panel)}
+  .tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:500 11px/14px var(--sans);color:var(--muted)}
+  .tab.on{color:var(--text)}
+  .tab.on .pill{background:var(--bg-selected)}
+  .pill{width:52px;height:28px;border-radius:999px;display:grid;place-items:center;position:relative}
+  .badge{position:absolute;top:-2px;right:6px;min-width:16px;height:16px;border-radius:999px;background:var(--warning);color:var(--action-fg);font:600 11px/16px var(--sans);text-align:center;padding:0 4px}
+  .hello{display:flex;align-items:center;gap:12px;margin:4px 4px 16px}
+  .hello img{width:64px;height:64px}
+  .hello h3{margin:0;font:600 22px/28px var(--display)}
+  .hello small{color:var(--muted);font-size:13px}
+  .sec{font:500 12px/16px var(--sans);color:var(--muted);margin:12px 4px 6px}
+  .row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px}
+  .row img{width:32px;height:32px;flex:none}
+  .row .n{font:500 14px/20px var(--sans)}
+  .row>div{min-width:0;flex:1}.row .s{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .st{flex:none}
+  .row .st{margin-left:auto;font:500 11px/14px var(--sans);padding:2px 8px;border-radius:999px}
+  .st.w{background:var(--warning-soft);color:var(--warning)}.st.i{background:#8db6fa1f;color:var(--info)}
+  .card{border:1px solid var(--border);background:var(--bg-surface);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;font-size:13px;line-height:18px}
+  .card b{font-weight:600}
+  .drawer{position:absolute;inset:76px 0 0 0;display:flex}
+  .scrim{position:absolute;inset:0;background:rgb(0 0 0/.6)}
+  .rail{position:relative;width:56px;background:var(--bg-app);display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:12px}
+  .panel{position:relative;width:200px;background:var(--bg-panel);border-right:1px solid var(--border);padding:12px 8px}
+  .panel .ph{display:flex;justify-content:space-between;align-items:center;font:500 14px/20px var(--sans);padding:0 4px 8px}
+  .li{height:36px;display:flex;align-items:center;padding:0 10px;border-radius:6px;font-size:13px;color:var(--muted)}
+  .rk{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:var(--muted);position:relative}
+  .rk.on{background:var(--bg-selected);color:var(--text)}
+  svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .notes{margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .note{border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--bg-panel)}
+  .note h3{margin:0 0 6px;font:600 15px/22px var(--sans)}
+  .note ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;line-height:22px}
+</style>
+</head>
+<body>
+<main>
+<p style="margin:0 0 16px;padding:10px 12px;border-radius:10px;background:#172340;color:#8db6fa;font-size:14px">Proposta histórica: a opção B foi escolhida e a versão aprovada, com a identidade final, está em <a href="telas/01-inicio-e-conversa-do-bot.html" style="color:inherit">telas/01-inicio-e-conversa-do-bot.html</a>.</p>
+<h1>Navegação no celular</h1>
+<p class="lead">Hoje o app sempre abre no último bot. Para ir ao Chat geral são três toques: menu, ícone do chat, conversa. As duas propostas deixam o chat a zero ou um toque, sem afastar os bots. Os números rosa marcam a ordem dos toques.</p>
+
+<div class="cols">
+
+<!-- ===== Hoje ===== -->
+<section class="opt">
+<h2>Hoje</h2>
+<p>Abre no último bot. A navegação inteira fica escondida no menu.</p>
+<div class="taps"><span>Chat geral: <b>3 toques</b></span><span>Outro bot: <b>2 toques</b></span><span>Aprovações: <b>2 toques</b></span></div>
+<div class="phone">
+  <div class="sb"></div>
+  <div class="hdr"><span class="ib hit" data-n="1"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="t">Bots</span></div>
+  <div class="body">
+    <div class="msg me">Resume meus e-mails de hoje</div>
+    <div class="bot"><img src="assets/Faisca/faisca-idle.svg" alt=""><div class="msg" style="padding:0">Três e-mails pedem resposta: o contrato, a reunião de sexta e a fatura.</div></div>
+  </div>
+  <div class="drawer">
+    <div class="scrim"></div>
+    <div class="rail"><span class="rk on"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg></span><span class="rk hit" data-n="2"><svg class="i" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span class="rk"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="rk"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></div>
+    <div class="panel"><div class="ph">Chat geral <span>+</span></div><div class="li hit" data-n="3" style="position:relative;background:var(--bg-selected);color:var(--text)">Viagem para Floripa</div><div class="li">Ideias de post</div><div class="li">Dúvida de imposto</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ===== Proposta A ===== -->
+<section class="opt">
+<h2>A · Barra inferior</h2>
+<p>Quatro abas sempre visíveis, no padrão do Android. O app reabre na última aba usada; Configurações vai para o cabeçalho.</p>
+<div class="taps"><span>Chat geral: <b>1 toque</b></span><span>Outro bot: <b>2 toques</b></span><span>Aprovações: <b>1 toque</b></span></div>
+<div class="phone">
+  <div class="sb"></div>
+  <div class="hdr"><span class="t" style="padding-left:8px">Chat geral</span><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="ib"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span></div>
+  <div class="body">
+    <div class="msg me">Qual a melhor época para ir a Floripa?</div>
+    <div class="bot"><img src="assets/Faisca/faisca-working.svg" alt=""><div class="msg" style="padding:0;color:var(--muted)">Trabalhando…</div></div>
+  </div>
+  <div class="composer">Mensagem para o Aion<span class="send"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span></div>
+  <nav class="tabs">
+    <span class="tab on hit" data-n="1"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Chat</span>
+    <span class="tab"><span class="pill"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg></span>Bots</span>
+    <span class="tab"><span class="pill"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Rotinas</span>
+    <span class="tab"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="badge">2</span></span>Aprovações</span>
+  </nav>
+</div>
+</section>
+
+<!-- ===== Proposta B ===== -->
+<section class="opt">
+<h2>B · Início com a Faísca<span class="tag">escolhida</span></h2>
+<p>A barra inferior da A com uma aba Início: o composer já abre pronto para falar com o Aion, e os bots aparecem com o estado ao vivo logo abaixo.</p>
+<div class="taps"><span>Chat geral: <b>0 toque</b> (já pode digitar)</span><span>Qualquer bot: <b>1 toque</b></span><span>Aprovações: <b>1 toque</b></span></div>
+<div class="phone">
+  <div class="sb"></div>
+  <div class="hdr"><span class="t" style="padding-left:8px"><svg viewBox="0 0 240 96" width="55" height="22" role="img" aria-label="aion"><circle cx="34" cy="55" r="22" fill="none" stroke="#ECECF1" stroke-width="14"/><path d="M56 34V80M88 34V80" stroke="#ECECF1" stroke-width="14" stroke-linecap="round"/><circle cx="136" cy="55" r="22" fill="none" stroke="#ECECF1" stroke-width="14"/><path d="M186 80V34M186 54C186 40 195 33 206 33C218 33 226 41 226 54V80" fill="none" stroke="#ECECF1" stroke-width="14" stroke-linecap="round"/><path transform="translate(88 12)" d="M0 -11C1.6 -3.6 3.6 -1.6 11 0C3.6 1.6 1.6 3.6 0 11C-1.6 3.6 -3.6 1.6 -11 0C-3.6 -1.6 -1.6 -3.6 0 -11Z" fill="#FACC15" stroke="#A16207" stroke-width="1.2"/></svg></span><span class="ib"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span></div>
+  <div class="body">
+    <div class="hello"><img src="assets/Faisca/faisca-idle.svg" alt=""><div><h3>Boa tarde, Marco</h3><small>2 bots trabalhando · 1 aprovação</small></div></div>
+    <div class="card"><svg class="i" viewBox="0 0 24 24" style="color:var(--warning)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span><b>Financeiro</b> quer enviar um e-mail para a contabilidade</span></div>
+    <div class="sec">Seus bots</div>
+    <div class="row"><img src="assets/Faisca/faisca-working.svg" alt=""><div><div class="n">Resumo das manhãs</div><div class="s">Lendo a caixa de entrada…</div></div><span class="st i">Trabalhando</span></div>
+    <div class="row"><img src="assets/Faisca/faisca-bot-verde.svg" alt=""><div><div class="n">Financeiro</div><div class="s">Preparei o e-mail da contabilidade</div></div><span class="st w">Aguardando</span></div>
+    <div class="row"><img src="assets/Faisca/faisca-bot-rosa.svg" alt=""><div><div class="n">Conteúdo</div><div class="s">Rotina das 9h concluída</div></div></div>
+    <div class="sec">Chats recentes</div>
+    <div class="row" style="padding:6px 8px"><div><div class="n">Viagem para Floripa</div><div class="s">ontem</div></div></div>
+  </div>
+  <div class="composer hit" data-n="0" style="position:relative">Pergunte ao Aion<span class="send"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span></div>
+  <nav class="tabs">
+    <span class="tab on"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Início</span>
+    <span class="tab"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Chats</span>
+    <span class="tab"><span class="pill"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Rotinas</span>
+    <span class="tab"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="badge">1</span></span>Aprovações</span>
+  </nav>
+</div>
+</section>
+</div>
+
+<div class="notes">
+  <div class="note"><h3>Por que a B</h3><ul>
+    <li>A pergunta rápida ao Aion vira o caminho mais curto: abre e digita.</li>
+    <li>Os bots ficam a um toque, já com o estado da Faísca (trabalhando, aguardando), sem precisar abrir cada um.</li>
+    <li>A Faísca na cor da marca recebe o dono: é a tela onde a identidade nova mais aparece.</li>
+    <li>Enviar no composer do Início cria uma sessão do Chat geral e abre a conversa; nada é criado só por abrir o app.</li>
+  </ul></div>
+  <div class="note"><h3>Vale para as duas</h3><ul>
+    <li>Atalhos do ícone do PWA (pressionar e segurar no Android): "Novo chat" e "Aprovações", via <code>shortcuts</code> no manifesto.</li>
+    <li>Desktop não muda: barra de ícones e painel continuam.</li>
+    <li>Barra inferior com 64 px mais a safe area e alvos de 48 px; o teclado aberto esconde a barra.</li>
+    <li>O selo de aprovações pendentes migra do ícone da barra lateral para a aba.</li>
+  </ul></div>
+  <div class="note"><h3>O que fica para decidir</h3><ul>
+    <li>Bots deixam de ser aba própria na B (estão no Início). A lista completa e "Novo bot" ficam no Início e em Configurações?</li>
+    <li>O app abre sempre no Início ou na última aba usada? A recomendação é Início, com o rascunho do composer preservado.</li>
+  </ul></div>
+</div>
+</main>
+</body>
+</html>

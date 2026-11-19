@@ -1,0 +1,17 @@
+{
+  "name": "@aion/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Contratos compartilhados entre web, api e core: schemas Zod, códigos de erro e cabeçalhos de segurança.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "zod": "^4.6.6"
+  }
+}

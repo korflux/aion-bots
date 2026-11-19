@@ -1,0 +1,18 @@
+# Contexto de build enxuto: os Dockerfiles constroem a partir da raiz, então tudo que não é código fica de fora.
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+.git
+.github
+.vibeflow
+.agents
+.erros-encontrados
+docs
+.env
+.env.*
+!.env.example
+**/test-results
+**/playwright-report
+**/coverage
+**/*.tsbuildinfo

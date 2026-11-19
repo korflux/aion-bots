@@ -1,0 +1,26 @@
+{
+  "name": "@aion/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Serviço api: rotas HTTP (e SSE nas próximas tasks). Casca fina sobre @aion/core.",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsup",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@aion/core": "workspace:*",
+    "@aion/shared": "workspace:*",
+    "@fastify/cookie": "^11.1.2",
+    "fastify": "^5.12.5",
+    "fastify-type-provider-zod": "^7.0.0",
+    "zod": "^4.6.6"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.15"
+  }
+}

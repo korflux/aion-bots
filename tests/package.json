@@ -1,0 +1,15 @@
+{
+  "name": "@aion/tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Testes que cruzam serviços: smoke de api + worker reais e a pilha usada pelo E2E da web.",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@aion/core": "workspace:*",
+    "@aion/shared": "workspace:*"
+  }
+}

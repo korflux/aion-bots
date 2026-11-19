@@ -1,0 +1,17 @@
+# Configuração do gitleaks: regras padrão do projeto mais uma exceção estreita e justificada.
+#
+# Os execution.json das phases (VibeFlow) registram, por prova, o hash Git (SHA-1, 40 hex) de cada arquivo de entrada, no formato
+# "caminho/do/arquivo.ext": "<40 hex>". A regra generic-api-key confunde esses hashes com chaves quando o caminho contém "api" ou "auth"
+# (ex.: conversation-api.ts, auth.spec.ts). Conferido em 12/10/2026: os valores batem com `git hash-object` dos arquivos citados.
+#
+# A exceção NÃO usa `paths`: no gitleaks uma allowlist por caminho pula o arquivo inteiro (inclusive um segredo real nele), mesmo com
+# condition AND. Ela vale só para a regra generic-api-key e só para a linha exatamente nesse formato (chave que é um nome de arquivo com
+# extensão de código/documento e valor de 40 hex); qualquer outra linha, arquivo ou regra continua sendo varrida.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Hashes Git de arquivos de entrada registrados nas provas (execution.json)"
+targetRules = ["generic-api-key"]
+regexTarget = "line"
+regexes = ['''^\s*"[A-Za-z0-9._/@()\[\]-]+\.(ts|tsx|js|mjs|cjs|json|md|css|sql|py|yaml|yml|toml|txt|html|ps1|sh)": "[0-9a-f]{40}",?$''']

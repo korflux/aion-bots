@@ -1,0 +1,578 @@
+/*
+ * Tokens do Aion: tema escuro único (o claro é só de materiais e fica fora do app), Tailwind v4 com os tokens como variáveis CSS. A fonte dos valores é
+ * `docs/identidade/tokens.json` (phase 5, TOK-01); a prova de contraste (`tokens-contrast.test.ts`) LÊ ESTE ARQUIVO, então um valor trocado aqui que
+ * reprove o texto (4,5:1) ou o foco (3:1) derruba o teste. --text-subtle é PROIBIDO sobre --bg-selected: nesse fundo usar --text-muted.
+ * `--faisca` é cor de corpo e de bloco, nunca de texto (texto de marca é `--faisca-claro`); `--brilho` só na estrela da Faísca.
+ */
+@import "tailwindcss";
+/*
+ * Faísca, o mascote do Aion (components/mascot): cores, poses e movimento próprios. Fora de @layer de propósito, como as demais regras de componente deste
+ * arquivo; por isso um utilitário do Tailwind não sobrescreve nada dele.
+ */
+@import "../components/mascot/faisca.css";
+
+:root {
+  color-scheme: dark;
+
+  /* Fundos */
+  --bg-app: #0e0e13;
+  --bg-panel: #15151b;
+  --bg-surface: #1b1b22;
+  --bg-surface-hover: #23232b;
+  --bg-selected: #2a2a33;
+
+  /* Bordas */
+  --border: #2e2e38;
+  --border-strong: #6a6a80;
+
+  /* Textos */
+  --text: #ececf1;
+  --text-muted: #a3a3b0;
+  --text-subtle: #8b8b99;
+
+  /* Ação e foco */
+  --action: #ececf1;
+  --action-fg: #0e0e13;
+  --focus: #8db6fa;
+
+  /* Marca: a Faísca e o que a acompanha */
+  --faisca: #3b82f6;
+  --faisca-claro: #8db6fa;
+  --faisca-suave: #172340;
+  --brilho: #facc15;
+  --brilho-miolo: #fef3c7;
+  --brilho-traco: #a16207;
+  --bochecha: #ff7aa8;
+  --tinta: #1b1530;
+
+  /* Estados (success, warning e danger têm variante -soft para fundos de selo e cartão). `--info` é o azul da Faísca: só links da atividade e bolinha de não lido, nunca status (UI-06, A2). */
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --info: #8db6fa;
+  --success-soft: #4ade801f;
+  --warning-soft: #fbbf241f;
+  --danger-soft: #f871711f;
+
+  /* Cores de bot (as 12 de BOT_COLORS em @aion/shared; a cor de cada bot é gravada em `bots.color` e chega à tela em `--bot`) */
+  --bot-vermelho: #f87171;
+  --bot-laranja: #fb923c;
+  --bot-ambar: #fbbf24;
+  --bot-lima: #a3e635;
+  --bot-verde: #4ade80;
+  --bot-turquesa: #2dd4bf;
+  --bot-ciano: #22d3ee;
+  --bot-azul: #60a5fa;
+  --bot-indigo: #818cf8;
+  --bot-violeta: #a78bfa;
+  --bot-rosa: #f472b6;
+  --bot-cinza: #9ca3af;
+
+  /* Espaço */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Movimento: entradas usam a duração cheia e saídas cerca de 60% dela; hover só com ponteiro fino */
+  --dur-instant: 80ms;
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 250ms;
+  --dur-slower: 400ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Sem degradês no fundo (phase 18, UI-06): página, painéis, cartões e composer são cor lisa dos tokens `bg-*`. Só sobra o halo da Faísca em destaque, que é da própria Faísca. */
+  --grad-hero: radial-gradient(closest-side, #3b82f62e 0%, #818cf814 45%, #3b82f600 100%);
+}
+
+@theme inline {
+  --color-app: var(--bg-app);
+  --color-panel: var(--bg-panel);
+  --color-surface: var(--bg-surface);
+  --color-surface-hover: var(--bg-surface-hover);
+  --color-selected: var(--bg-selected);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--text);
+  --color-muted: var(--text-muted);
+  --color-subtle: var(--text-subtle);
+  --color-action: var(--action);
+  --color-action-fg: var(--action-fg);
+  --color-focus: var(--focus);
+  --color-faisca: var(--faisca);
+  --color-faisca-claro: var(--faisca-claro);
+  --color-faisca-suave: var(--faisca-suave);
+  --color-brilho: var(--brilho);
+  --color-tinta: var(--tinta);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-success-soft: var(--success-soft);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger-soft: var(--danger-soft);
+
+  /*
+   * Famílias. `font-display` (Fredoka, autohospedada por @fontsource-variable/fredoka, sem CDN) é a classe de marca e só vale na saudação e no título do
+   * estado vazio do Início; o logotipo é sempre o SVG, nunca texto em Fredoka. O resto do app é `font-sans` e `font-mono`.
+   */
+  --font-display: "Fredoka Variable", "Fredoka", "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Raios do design: sm selo/item, md input/botão/cartão, lg popover/modal, xl composer e ícone do app, full pílula e avatar */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Sombra só em camada flutuante (popover, menu, modal, diálogo de confirmação, pílula "Novas mensagens"): o app separa as demais camadas por fundo e borda. Vira o
+     utilitário `shadow-float`, a ÚNICA fonte da sombra flutuante: nenhum componente escreve o valor à mão. */
+  --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  /* Estilos de texto do design (utilitários `text-display-sm`, `text-page-title`...): tamanho, entrelinha, peso e espaçamento. */
+  --text-display: 40px;
+  --text-display--line-height: 44px;
+  --text-display--font-weight: 600;
+  --text-display--letter-spacing: -0.01em;
+  --text-display-sm: 24px;
+  --text-display-sm--line-height: 30px;
+  --text-display-sm--font-weight: 600;
+  --text-page-title: 18px;
+  --text-page-title--line-height: 26px;
+  --text-page-title--font-weight: 600;
+  --text-section-title: 15px;
+  --text-section-title--line-height: 24px;
+  --text-section-title--font-weight: 600;
+  --text-body: 15px;
+  --text-body--line-height: 24px;
+  --text-body--font-weight: 400;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-label--font-weight: 500;
+  --text-small: 13px;
+  --text-small--line-height: 20px;
+  --text-small--font-weight: 400;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+  --text-code: 13px;
+  --text-code--line-height: 20px;
+  --text-code--font-weight: 400;
+}
+
+/*
+ * Fundo liso (phase 18, UI-06): a página, os painéis, os cartões e o composer são a cor sólida do token (`bg-app`, `bg-panel`, `bg-surface`), sem degradê, sem grão e sem brilho
+ * de topo; o azul da marca fica só na Faísca, nos links, no anel de foco e na bolinha de não lido. Os utilitários abaixo existiam na phase 5 (T8) e ainda são citados por cerca de
+ * 34 componentes; em vez de editar todos de uma vez, cada um continua definido aqui, em UM lugar, mas sem efeito, então citar ou não citar a classe dá no mesmo.
+ * ponytail: utilitários `grad-app`, `grad-panel`, `grad-sheen`, `grad-composer`, `bot-glow` e `grain` sem efeito, mantidos para não tocar ~34 componentes nesta phase; remover as classes dos componentes e estas definições numa limpeza própria.
+ */
+@utility grad-app {
+  background-image: none;
+}
+@utility grad-panel {
+  background-image: none;
+}
+@utility grad-sheen {
+  background-image: none;
+}
+@utility grad-composer {
+  background-image: none;
+}
+/* Conversa de um bot: fundo opaco liso, sem brilho na cor do bot (a cor do bot segue no avatar e no nome). */
+@utility bot-glow {
+  background-color: var(--bg-app);
+  background-image: none;
+}
+@utility grain {
+  background-image: none;
+}
+/* Hover só onde há ponteiro fino e hover real; no toque vale o :active. */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  /* Fundo da página: a cor sólida do token, lisa (UI-06). O shell e as telas de conteúdo ficam transparentes (sem `bg-app` por cima), então este é o fundo de TODAS as telas,
+     dentro e fora do shell. */
+  background-color: var(--bg-app);
+  background-repeat: no-repeat;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  font-size: 15px;
+  line-height: 24px;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visível sempre, em qualquer controle (A16). */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button,
+[role="button"],
+a,
+summary {
+  touch-action: manipulation;
+}
+
+/* Animações do drawer e do painel: só transform e opacity (design: motion e física). */
+@keyframes drawer-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes drawer-out-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes sheet-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Cartão de sistema novo: chega com opacity e translateY(4px), 150 ms (design: motion da conversa). */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Ponto do selo "Trabalhando": opacidade em 1,2 s linear (desligado por reduced motion, que fixa a duração em ~0). */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/*
+ * Markdown das respostas do bot (conversation/markdown.tsx). Não há plugin de tipografia: estas regras cobrem só o que o modelo
+ * costuma escrever (parágrafos, listas, código, citação, tabela). O código usa mono sobre --bg-surface e rola por dentro.
+ */
+.markdown {
+  font-size: 15px;
+  line-height: 24px;
+  overflow-wrap: anywhere;
+}
+.markdown > * + * {
+  margin-top: 0.75rem;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  font-weight: 600;
+  line-height: 1.35;
+}
+.markdown h1 {
+  font-size: 1.25rem;
+}
+.markdown h2 {
+  font-size: 1.125rem;
+}
+.markdown h3,
+.markdown h4 {
+  font-size: 1rem;
+}
+.markdown ul,
+.markdown ol {
+  padding-left: 1.5rem;
+}
+.markdown ul {
+  list-style: disc;
+}
+.markdown ol {
+  list-style: decimal;
+}
+.markdown li + li {
+  margin-top: 0.25rem;
+}
+.markdown a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.markdown blockquote {
+  border-left: 2px solid var(--border-strong);
+  padding-left: 0.75rem;
+  color: var(--text-muted);
+}
+.markdown code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  padding: 0.1rem 0.35rem;
+}
+/* O <pre> é o corpo do cartão de bloco (conversation/code-block.tsx), que já traz fundo, borda e rolagem; aqui só a tipografia do código. */
+.markdown pre code {
+  background: none;
+  padding: 0;
+  line-height: 20px;
+}
+.markdown hr {
+  border-color: var(--border);
+}
+.markdown-table {
+  overflow-x: auto;
+}
+/*
+ * Corpo de código que rola por dentro do cartão de bloco: o anel de foco é desenhado para dentro, rente à borda do corpo, e não por cima do
+ * divisor do cabeçalho e da borda do cartão. Fora de @layer de propósito, para vencer a regra global de :focus-visible.
+ */
+.code-block-body:focus-visible {
+  outline-offset: -2px;
+}
+.markdown table {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+}
+.markdown th {
+  background: var(--bg-surface);
+}
+
+/*
+ * Coluna de mensagens da conversa (thread.tsx). Ela termina rente ao cabeçalho e ao composer, então, ao rolar, o texto era fatiado na borda e
+ * parecia passar por baixo do campo de escrita. A máscara esmaece o conteúdo nos últimos 24 px de baixo e nos 12 de cima (o fim da conversa
+ * tem folga maior que o esmaecimento, então nada em repouso fica apagado). A máscara também apagaria o anel de foco da própria coluna, que é
+ * focável por teclado (rolar com as setas): por isso o anel é desenhado no contêiner pai, que não é mascarado, por dentro da borda.
+ * Fora de @layer de propósito, como as regras do composer e a global de :focus-visible.
+ */
+.thread-scroll {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
+}
+.thread-scroll:focus-visible {
+  outline: none;
+}
+.thread-pane:has(.thread-scroll:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/*
+ * Barra de ações da mensagem (conversation/message-actions.tsx; phase 4, design "Revelação"). Sem hover real (toque) ela fica sempre visível,
+ * por isso a regra só existe com ponteiro fino: aí a barra some por opacidade e volta ao passar o mouse sobre a mensagem (`.message-group`, a
+ * bolha com a barra) ou com foco dentro dela, em 150 ms; `data-pinned` (a da última resposta) não esconde. Só opacidade: o espaço fica
+ * reservado e nada se desloca. Fora de @layer, como as demais regras da conversa.
+ */
+@media (hover: hover) and (pointer: fine) {
+  .message-actions {
+    transition: opacity 150ms ease;
+  }
+  .message-actions:not([data-pinned]) {
+    opacity: 0;
+  }
+  .message-group:hover .message-actions,
+  .message-group:focus-within .message-actions {
+    opacity: 1;
+  }
+}
+
+/*
+ * Composer da conversa: o anel de foco envolve a caixa arredondada inteira, e não o campo de texto reto dentro dela. O foco
+ * segue visível (A16): só muda de elemento. As regras ficam fora de @layer de propósito: a regra global de :focus-visible
+ * também está, e utilitários do Tailwind (em @layer) nunca a vencem.
+ */
+.composer-field:focus-visible {
+  outline: none;
+}
+.composer:has(.composer-field:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/*
+ * Barra de etapas do effort (model-selector.tsx, `EffortControl`). O `<input type="range">` nativo fica por cima, transparente, e é ele que
+ * recebe teclado, toque e arraste; por baixo ficam a trilha, o preenchimento até a etapa atual e um ponto por etapa. A bolinha mede
+ * --thumb e o centro dela anda de --thumb/2 a (100% - --thumb/2), por isso os pontos e o preenchimento usam a mesma conta. --steps (número de
+ * intervalos) e --index (etapa atual) chegam do componente. Fora de @layer de propósito, como as regras do composer (pseudo-elementos do
+ * navegador não passam pelos utilitários do Tailwind).
+ */
+.effort-slider {
+  --thumb: 20px;
+  --height: 28px;
+  position: relative;
+  height: var(--height);
+}
+/* Alvo de toque de 40 px no celular (a trilha desenhada continua com 28 px). */
+@media (max-width: 767px) {
+  .effort-slider {
+    --height: 40px;
+  }
+}
+.effort-track {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 28px;
+  transform: translateY(-50%);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  background: var(--bg-app);
+}
+.effort-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--index) / var(--steps));
+  background: var(--border-strong);
+}
+.effort-tick {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--step) / var(--steps));
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--text-subtle);
+  transform: translate(-50%, -50%);
+}
+.effort-slider input[type="range"] {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.effort-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.effort-slider input[type="range"]::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+.effort-slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--thumb);
+  height: var(--thumb);
+  /* A trilha do campo tem a altura toda; a bolinha desce até o meio dela (percentual de margem seria sobre a largura, por isso a conta em px). */
+  margin-top: calc((var(--height) - var(--thumb)) / 2);
+  border: 0;
+  border-radius: 9999px;
+  background: var(--action);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.5);
+}
+.effort-slider input[type="range"]::-moz-range-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  border: 0;
+  border-radius: 9999px;
+  background: var(--action);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.5);
+}
+
+/* Com reduced motion, troca de estado imediata e sem deslocamentos. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

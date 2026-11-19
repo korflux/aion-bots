@@ -1,0 +1,44 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Aion</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+html,body{margin:0;height:100%}
+body{background:var(--bg-app,#0e0e13);color:var(--text,#ececf1);font-family:var(--font-sans,"Inter",sans-serif);overflow:hidden}
+.cover{position:relative;height:288px;width:960px;overflow:hidden}
+.art{position:absolute;top:0;left:480px;width:480px;height:288px}
+.faisca{fill:var(--faisca,#3b82f6)}.claro{fill:var(--faisca-claro,#8db6fa)}.suave{fill:var(--faisca-suave,#172340)}
+.brilho{fill:var(--brilho,#facc15)}.bochecha{fill:var(--bochecha,#ff7aa8)}
+.blk{rx:var(--radius-lg,16px)}
+.words{position:absolute;left:32px;bottom:32px;max-width:440px}
+.name{margin:0;font-family:var(--font-display,"Fredoka","Nunito",sans-serif);font-weight:600;font-size:120px;line-height:.92;letter-spacing:-.01em;color:var(--text,#ececf1)}
+.tag{margin:8px 0 0 4px;font-size:14px;line-height:20px;color:var(--text-muted,#a3a3b0)}
+</style></head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      faisca 160×264 sangrando pelo topo (a cor da marca, maior) · faisca-suave 128×176 · faisca-claro 96×96 · brilho 64×64 · bochecha 64×32 (pílula, uso raro)
+  arrangement um bloco alto de faisca com satélites; bases alinhadas a space-8 da borda, gutters space-4
+  pattern     a estrela da faísca (motivo literal da marca): cinco estrelas de quatro pontas em brilho, três sobre o bloco faisca e duas soltas, subindo como faíscas
+  scales      lados múltiplos de space-8 (32); gutters space-4 (16); cantos radius-lg (16); pílula rx = metade da altura (16)
+-->
+<rect class="faisca blk" x="16" y="-8" width="160" height="264" rx="16"/>
+<rect class="suave blk" x="192" y="80" width="128" height="176" rx="16"/>
+<rect class="claro blk" x="336" y="160" width="96" height="96" rx="16"/>
+<rect class="brilho blk" x="336" y="80" width="64" height="64" rx="16"/>
+<rect class="bochecha" x="208" y="32" width="64" height="32" rx="16"/>
+<g class="brilho">
+<path transform="translate(96 200) scale(2.2)" d="M0 -11 C1.6 -3.6 3.6 -1.6 11 0 C3.6 1.6 1.6 3.6 0 11 C-1.6 3.6 -3.6 1.6 -11 0 C-3.6 -1.6 -1.6 -3.6 0 -11Z"/>
+<path transform="translate(60 120) scale(1.3)" d="M0 -11 C1.6 -3.6 3.6 -1.6 11 0 C3.6 1.6 1.6 3.6 0 11 C-1.6 3.6 -3.6 1.6 -11 0 C-3.6 -1.6 -1.6 -3.6 0 -11Z"/>
+<path transform="translate(128 56) scale(.8)" d="M0 -11 C1.6 -3.6 3.6 -1.6 11 0 C3.6 1.6 1.6 3.6 0 11 C-1.6 3.6 -3.6 1.6 -11 0 C-3.6 -1.6 -1.6 -3.6 0 -11Z"/>
+<path transform="translate(408 40) scale(1)" d="M0 -11 C1.6 -3.6 3.6 -1.6 11 0 C3.6 1.6 1.6 3.6 0 11 C-1.6 3.6 -3.6 1.6 -11 0 C-3.6 -1.6 -1.6 -3.6 0 -11Z"/>
+<path transform="translate(448 112) scale(.6)" d="M0 -11 C1.6 -3.6 3.6 -1.6 11 0 C3.6 1.6 1.6 3.6 0 11 C-1.6 3.6 -3.6 1.6 -11 0 C-3.6 -1.6 -1.6 -3.6 0 -11Z"/>
+</g>
+</svg>
+</div>
+<div class="words"><h1 class="name">Aion</h1><p class="tag">Bots que trabalham por você, com uma faísca de personalidade.</p></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# Workspaces do monorepo Aion: uma pasta por serviço do Easypanel (apps) e pacotes compartilhados (packages).
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "tests"
+
+# Exceções do `pnpm audit --audit-level high` (PROC-01), só para os advisories citados abaixo (qualquer outro advisory alto continua
+# reprovando). A primeira foi criada em 2026-10-03.
+# GHSA-vfj7-8cjw-p6xm (`braces` <= 3.0.3, negação de serviço por esgotamento de pilha em padrões muito aninhados): não existe versão
+# corrigida (a última, 3.0.3, é a vulnerável). Só entra pelo lint do Next (`apps/web > eslint-config-next > @next/eslint-plugin-next >
+# fast-glob > micromatch > braces`): é dependência de desenvolvimento, fora do build das imagens e nunca recebe entrada externa.
+# Remover quando o `braces` publicar versão corrigida (atualizar com `pnpm update braces --recursive` ou um `overrides`) ou quando o
+# `fast-glob`/`micromatch` deixarem de depender dele. A chave é `ignoreGhsas` (`ignoreCves` só casa ids de CVE e não ignora este).
+auditConfig:
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm
+    # GHSA-fc5q-39xc-vjpf (`picomatch` <= 4.0.7, ReDoS em extglob de ramo único repetido), aceita pelo dono em 2026-11-17: não existe
+    # versão corrigida. Só entra pelo lint (`typescript-eslint > @typescript-eslint/typescript-estree > tinyglobby > picomatch` e
+    # `apps/web > eslint-config-next > @next/eslint-plugin-next > fast-glob > micromatch > picomatch`): dependência de desenvolvimento,
+    # fora do build das imagens, que só recebe os globs do próprio repositório. Remover quando o `picomatch` publicar versão corrigida
+    # (`pnpm update picomatch --recursive` ou um `overrides`) ou quando essas ferramentas deixarem de depender dele.
+    - GHSA-fc5q-39xc-vjpf
+
+# pnpm 10 bloqueia scripts de instalação por padrão. Só o que precisa baixar/compilar binário entra aqui.
+onlyBuiltDependencies:
+  - "@embedded-postgres/windows-x64"
+  - "@embedded-postgres/linux-x64"
+  - "@tailwindcss/oxide"
+  - esbuild
+  - sharp
+  - unrs-resolver
+
+# esbuild fixado em >= 0.28.1 (E1): o `tsup` 8.5.1 ainda pede ^0.27 e essa faixa tem o advisory GHSA-g7r4-m6w7-qqqr (leitura arbitrária de
+# arquivo no servidor de desenvolvimento do esbuild no Windows, que nunca usamos). Remover o override quando o `tsup` exigir >= 0.28.1.
+overrides:
+  esbuild: ">=0.28.1"
